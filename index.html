@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跟單計算機</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 10px; }
+        .input-group { margin: 8px 0; }
+        label { display: inline-block; width: 150px; }
+        input { padding: 5px; }
+        button { padding: 5px 15px; margin: 10px 0; }
+        .result { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h2>跟單計算機</h2>
+    
+    <div class="input-group">
+        <label>對方本金 ($):</label>
+        <input type="number" id="theirCapital" value="19257.81">
+    </div>
+    <div class="input-group">
+        <label>對方槓桿 (倍):</label>
+        <input type="number" id="theirLeverage" value="10">
+    </div>
+    <div class="input-group">
+        <label>對方倉位價值 ($):</label>
+        <input type="number" id="theirPosition" value="8623.23">
+    </div>
+    <div class="input-group">
+        <label>對方 Size (幣數):</label>
+        <input type="number" id="theirSize" value="3750.7">
+    </div>
+    <div class="input-group">
+        <label>對方入場價格 ($):</label>
+        <input type="number" id="entryPrice" value="2.3078" step="0.0001">
+    </div>
+    <div class="input-group">
+        <label>你的本金 ($):</label>
+        <input type="number" id="myCapital" value="900">
+    </div>
+    <div class="input-group">
+        <label>你的槓桿 (倍):</label>
+        <input type="number" id="myLeverage" value="75">
+    </div>
+
+    <button onclick="calculate()">計算</button>
+
+    <h3>計算結果：</h3>
+    <div class="result" id="result">
+        <p>跟單比例 (%): <span id="ratio"></span></p>
+        <p>你的倉位價值 ($): <span id="myPosition"></span></p>
+        <p>你的保證金 ($): <span id="myMargin"></span></p>
+        <p>你的 Size (幣數): <span id="mySize"></span></p>
+    </div>
+
+    <script>
+        function calculate() {
+            const theirCapital = parseFloat(document.getElementById('theirCapital').value) || 0;
+            const theirLeverage = parseFloat(document.getElementById('theirLeverage').value) || 0;
+            const theirPosition = parseFloat(document.getElementById('theirPosition').value) || 0;
+            const theirSize = parseFloat(document.getElementById('theirSize').value) || 0;
+            const entryPrice = parseFloat(document.getElementById('entryPrice').value) || 0;
+            const myCapital = parseFloat(document.getElementById('myCapital').value) || 0;
+            const myLeverage = parseFloat(document.getElementById('myLeverage').value) || 0;
+
+            const ratio = theirCapital ? (myCapital / theirCapital) * 100 : 0;
+            const myPosition = ratio * theirPosition / 100;
+            const myMargin = myLeverage ? myPosition / myLeverage : 0;
+            const mySize = entryPrice ? myPosition / entryPrice : 0;
+
+            document.getElementById('ratio').textContent = ratio.toFixed(2) + '%';
+            document.getElementById('myPosition').textContent = myPosition.toFixed(2);
+            document.getElementById('myMargin').textContent = myMargin.toFixed(2);
+            document.getElementById('mySize').textContent = mySize.toFixed(2);
+        }
+        calculate(); // 初次載入就跑一次
+    </script>
+</body>
+</html>
